@@ -1,7 +1,7 @@
 ## JavaScript Learning Note
 
 #### 複製物件  
-物件(Object)的相等`=`並不會複製物件，而是建立相同的參考，  
+物件(Object)的 assign (`=`)並不會複製物件，而是建立相同的參考，  
 因此在編輯物件時要注意會不會改到其他物件
 ```
 var objA = {Name:'A'}; 
@@ -12,7 +12,21 @@ objB.Name = 'B';
 console.log(objA.Name); // B 
 console.log(objB.Name); // B
 ```
-正確的複製方式可以使用`jQuery.extend()`或是`angular.copy()`
+正確的複製方式可使用:
+```
+Object.assign(target, ...sources)
+```
+用法
+```
+var obj = { a: 1 };
+var copy = Object.assign({}, obj);
+console.log(copy); // { a: 1 }
+```
+`Object.assign()` 僅會複製一層屬性，若要深層複製，可以使用
+```
+var copy = JSON.parse(JSON.stringify(obj));
+```
+或是使用 jQuery 提供的方法：
 ```
 jQuery.extend( [deep], target, object1 [, objectN ] );
 ```
@@ -22,14 +36,6 @@ jQuery.extend( [deep], target, object1 [, objectN ] );
 | target | Object | The object to extend. It will receive the new properties. |
 | object1 | Object | An object containing additional properties to merge in.|
 | objectN | Object | Additional objects containing properties to merge in. |  
-```
-angular.copy(source, [destination]);
-```
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| source | * | The source that will be used to make a copy. Can be any type. |
-| destination | Object/Array | Destination into which the source is copied. |
-| RETURN | * |The copy or updated destination, if destination was specified. |
   
 #### 物件的遍歷  
 `for in` 迴圈可列出物件所有的特性，但也包含了函式特性與原型特性  
@@ -170,6 +176,27 @@ for(var i=0; i<5; i++){
   
 #### 函式與變數的提昇（Hoisting）
 JavaScript 會把變數的宣告提昇到最頂端，但該變數的定義並不會被提昇（會被宣告但值為 undefined）。而對於函式，函式的宣告與定義都會被提昇到最頂端
-  
+
+常見的變數 Hoisting 問題
+```
+var foo = 1;
+function bar() {
+    console.log(foo);
+    if (!foo) {
+        var foo = 10;
+    }
+    console.log(foo);
+}
+bar(); // Output: undefined & 10
+```
+
 #### 函式的 arguments
 函式的`arguments`具有`length`特性，但不具有陣列的方法
+
+#### 無法使用中括號直接改變字串內的字元
+字串的`[]`運算子是 Read-only，無法用來改變字串的值
+```
+var s = '1111';
+s[0] = 0;
+console.log(s); // 仍是 '1111'
+```
